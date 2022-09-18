@@ -1,35 +1,45 @@
----
-layout: default
----
+<!doctype html>
+<html>
+  <head>
+    {% include head.html %}
+  </head>
 
-<article>
-    <div class=title>{{ page.title }}</div>
-    <div class=date>{{ page.date | date_to_string }}</div>
-    
-    {{ content }}
-    
-    <!-- related posts, by tags -->
-    {% assign related_list = nil %}
-    {% for tag in page.tags %}
-        {% for post in site.posts %}
-            {% if post.title != page.title %}
-                    {% for test_tag in post.tags %}
-                        {% if test_tag == tag %}
-                            {% assign tmp = nil %}
-                            {% capture tmp %}<li><a href="{{ post.url | prepend: site.baseurl }}">[{{ post.date | date_to_string }}] {{ post.title }}</a></li>{% endcapture %}
-                            {% assign related_list = related_list | append: tmp | append: ";" %}
-                        {% endif %}
-                    {% endfor %}
-            {% endif %}
-        {% endfor %}
-    {% endfor %}
-    
-    <div>
-        {% if related_list %}
-            <h2>Related Posts:</h2>
-            <ul>
-            {{ related_list | split: ";" | uniq | join: ""}}
-            </ul>
-        {% endif %}
+<body>
+
+  <div class="container">
+    {% include header.html %}
+
+    <div class="post-container">
+      <article id = "post">
+        <h2 id = "post-title">{{ page.title }}</h2>
+
+  {% if site.data.settings.date-under-post.active %}
+  <div class = "post-info">
+    <span>
+        <i class="far fa-calendar" aria-hidden="true"></i> <span>{{ page.date | date_to_string }}</span> - <i class="far fa-clock"></i> {% include reading_time.html %}
+    </span>
+  </div>
+  {% endif %}
+        {{ content }}
+      </article>
     </div>
-</article>
+    {% if site.data.settings.categories.active %}
+      {% include categories.html %}
+    {% endif %}
+
+    {% if site.data.settings.related-posts.active %}
+      {% include related-posts.html %}
+    {% endif %}
+
+    {% if site.data.settings.comments %}
+      {% include comments.html %}
+    {% endif %}
+  </div>
+
+{%- include footer.html -%}
+
+{% if site.data.settings.mathjax.active %}
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{% endif %}
+</body>
+</html>
